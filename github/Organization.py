@@ -44,6 +44,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
+import github.CustomProperty
 import github.Event
 import github.GithubObject
 import github.HookDelivery
@@ -1148,6 +1149,10 @@ class Organization(CompletableGithubObject):
             None,
             list_item="installations",
         )
+
+    def get_custom_properties(self) -> Any:
+        headers, data = self._requester.requestJsonAndCheck("GET", f"{self.url}/properties/schema")
+        return [github.CustomProperty.CustomProperty(self._requester, headers, d, completed=True) for d in data]
 
     def _useAttributes(self, attributes: dict[str, Any]) -> None:
         if "avatar_url" in attributes:  # pragma no branch
